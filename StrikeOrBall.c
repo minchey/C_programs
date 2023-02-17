@@ -19,6 +19,7 @@
 #include<Windows.h>
 #include<stdlib.h>
 #include<time.h>
+
 void textcolor(int colorNum, int colorNum2) {  //텍스트 컬러
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorNum);
 }
@@ -41,13 +42,13 @@ void Safe(int x, int y) { //금고구현
 int answer(int quiz,int num) {  
     int y = 5;
     int x = 30;
-    int result = 0;
+    int strike = 0;
     for (int i=0; i < 4; i++) {
         if (num % 10 == quiz % 10) {  //숫자자리수 맞으면 초록불
             gotoxy(x, y); textcolor(GREEN, BLACK);
             printf("●");
             textcolor(WHITE, BLACK);
-            result++;
+            strike++;
         }
         else {
             gotoxy(x, y); textcolor(RED, BLACK);  // 틀리면 빨간불
@@ -58,9 +59,8 @@ int answer(int quiz,int num) {
         quiz /= 10;
         x -= 4;
     }
-    if (quiz == num) {
-
-    }
+    return strike;
+    
 }
 void quizBox(int x, int y, int* answerNum) {  //답을 입력
     gotoxy(x, y - 1); textcolor(MAGENTA, BLUE); printf("자릿수 맞으면 초록불 아니면 빨간불"); textcolor(WHITE, BLACK);
@@ -72,16 +72,19 @@ int main() {
     SetConsoleTitle("StrikeNumber");
     int whatNum;  //난수생성
     int answerNum;  //정답입력
-    int chance = 15;
+    int chance = 10;
+    
     gotoxy(13, 2); textcolor(LIGHTBLUE, WHITE); printf("야구숫자맞추기!!"); textcolor(WHITE, BLACK);
     Safe(10, 3);
     gotoxy(0, 30);
     srand(time(NULL));
     whatNum = rand() % 10000;
     while (1) {
+        int ans;
         gotoxy(50, 6); textcolor(YELLOW, YELLOW); printf("남은기회: %d", chance); textcolor(WHITE, BLACK);
         quizBox(50, 5, &answerNum);
-        answer(whatNum, answerNum);
+        /*answer(whatNum, answerNum);*/
+        ans = answer(whatNum, answerNum);
         if(whatNum == answerNum){
             gotoxy(10, 11);
             textcolor(GREEN, YELLOW);
@@ -89,12 +92,29 @@ int main() {
             textcolor(WHITE, BLACK);
             break;
         }
-        chance--;
-        if (!chance) {
+        chance -= 1;
+        if (chance == 0) {
             gotoxy(10, 11);
             textcolor(RED, YELLOW);
             printf("기회를 모두 잃었습니다. 다시 시도하세요!");
             textcolor(WHITE, BLACK);
+            break;
+        }
+        switch (ans) { // 맞춘갯수 출력
+        case 1:
+            gotoxy(50, 7); textcolor(LIGHTGREEN, YELLOW);  printf("%d Strike ", ans); textcolor(RED, YELLOW); printf(" % d Ball\n", 4 - ans); textcolor(WHITE, BLACK);
+            break;
+        case 2:
+            gotoxy(50, 7); textcolor(LIGHTGREEN, YELLOW);  printf("%d Strike ", ans); textcolor(RED, YELLOW); printf(" % d Ball\n", 4 - ans); textcolor(WHITE, BLACK);
+            break;
+        case 3:
+            gotoxy(50, 7); textcolor(LIGHTGREEN, YELLOW);  printf("%d Strike ", ans); textcolor(RED, YELLOW); printf(" % d Ball\n", 4 - ans); textcolor(WHITE, BLACK);
+            break;
+        case 4:
+            gotoxy(50, 7); textcolor(LIGHTGREEN, YELLOW);  printf("%d Strike ", ans); textcolor(RED, YELLOW); printf(" % d Ball\n", 4 - ans); textcolor(WHITE, BLACK);
+            break;
+        default:
+            gotoxy(50, 7); textcolor(RED, YELLOW); printf("4Ball"); textcolor(WHITE, BLACK);
             break;
         }
         
